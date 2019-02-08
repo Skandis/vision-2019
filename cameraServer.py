@@ -72,7 +72,7 @@ def getRetroPos(img, display=False, sample=False):
         for cnt in contours:
             if cv2.contourArea(cnt) > minContourArea:
                 rects.append(cv2.minAreaRect(cnt))
-        rects.sort(key=lambda x:x[2])
+        rects.sort(key=lambda x:x[2]) 
         
         pairs = []
         leftRect = None
@@ -191,6 +191,7 @@ if __name__ == "__main__":
     entry_angle = nt.getEntry('ground_tape_angle')
     entry_y = nt.getEntry('ground_tape_y')
     entry_tape_angle = nt.getEntry('target_tape_error')
+    timestamp = nt.getEntry('fiducial_time')
 
     # start cameras
     cameras = []
@@ -204,11 +205,11 @@ if __name__ == "__main__":
     ground_frame = np.zeros(shape=(screenSize[1], screenSize[0], 3))
     retro_frame = np.zeros(shape=(screenSize[1], screenSize[0], 3))
     while True:
+        timestamp = time.time()
         _, ground_frame = ground_sink.grabFrameNoTimeout(image=ground_frame)
         _, retro_frame = retro_sink.grabFrameNoTimeout(image=retro_frame)
         retro_angle, percent, image = getRetroPos(retro_frame, True)
         ground_angle, x, y = getGroundPos(ground_frame)
-
         source.putFrame(image)
         entry_x.setNumber(x)
         entry_y.setNumber(y)
